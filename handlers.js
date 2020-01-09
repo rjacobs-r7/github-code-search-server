@@ -26,10 +26,12 @@ module.exports = app => {
     console.log(req.body, req.params);
     validate({ ...req.body, ...req.params }, {
       project: ['required', 'minlength:1'],
-      query: ['required', 'minlength:3']
+      query: ['required', 'minlength:3'],
+      pre: ['optional', 'number', 'min:0', 'max:10'],
+      post: ['optional', 'number', 'min:0', 'max:10']
     });
 
-    new CodeSearch(req.params.project).search(req.body.query)
+    new CodeSearch(req.params.project).search(req.body.query, { A: req.body.pre, B: req.body.post })
       .then(results => res.status(200).send(results))
       .catch(err => errorHandler(res, err));
   });
